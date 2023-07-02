@@ -96,3 +96,4 @@ ultralytics==8.0.123
 urllib3==1.26.16
 uvicorn==0.22.0
 Werkzeug==2.3.6
+python-dotenv==1.0.0
