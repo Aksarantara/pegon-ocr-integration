@@ -18,6 +18,10 @@ yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolo.pt')
 ocr_decoder = CTCDecoder.from_path('ocr_state.pt', CTCCRNNNoStretchV2, CHAR_MAP, blank_char=PEGON_CHARS[0])
 ocr_decoder.model = ocr_decoder.model.to(DEVICE)
 
+@app.get("/ping")
+async def ping():
+    return {"status": "Healthy"}
+
 # Define object detection endpoint
 @app.post("/infer")
 async def detect_objects(file: UploadFile = File(...)):

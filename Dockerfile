@@ -11,8 +11,8 @@ COPY . .
 RUN apt-get install -y git && \
     git clone https://github.com/ultralytics/yolov5.git
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-CMD uvicorn main:app --reload
+CMD uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 EXPOSE 8000
