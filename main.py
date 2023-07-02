@@ -13,6 +13,7 @@ from pegon_utils import PEGON_CHARS, CHAR_MAP
 from pegon_utils import ctc_collate_fn, CTCDecoder
 
 app = FastAPI()
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 load_dotenv()
 
 # Load YOLOv5 model
