@@ -10,6 +10,8 @@ from ocr import CTCCRNNNoStretchV2, ResizeAndPadHorizontal
 from pegon_utils import PEGON_CHARS, CHAR_MAP
 from pegon_utils import ctc_collate_fn, CTCDecoder
 
+RECOG_BATCH_SIZE = 2
+
 app = FastAPI()
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -53,7 +55,9 @@ async def detect_objects(file: UploadFile = File(...)):
     line_imgs = torch.stack(line_imgs).to(DEVICE)
     
     try:
-        result = evaluate(ocr_decoder, line_imgs)
+        result = []
+        for imgs in torch.split(line_imgs, RECOG_BATCH_SIZE):
+            result.extend(evaluate(ocr_decoder, imgs))
         return {'result': result}
     except RuntimeError:
         return {'result': [], 'message': "Failed to recognize: Out of memory"}
