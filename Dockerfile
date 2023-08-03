@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 COPY . .
 
-RUN apt-get install -y git && \
+RUN apt-get update && apt-get install -y git && \
     git clone https://github.com/ultralytics/yolov5.git
 
 RUN pip install -r requirements.txt

@@ -3,11 +3,10 @@ from typing import List
 import io
 import torch
 from torchvision.transforms import transforms
-from tqdm.notebook import tqdm
 from PIL import Image
-from ocr import CTCCRNNNoStretchV2, ResizeAndPadHorizontal
+from ocr import CTCCRNNNoStretchV2 as OCRModel, ResizeAndPadHorizontal
 
-from pegon_utils import PEGON_CHARS, CHAR_MAP
+from pegon_utils import PEGON_CHARS_V2 as PEGON_CHARS, CHAR_MAP_V2 as CHAR_MAP
 from pegon_utils import ctc_collate_fn, CTCDecoder
 
 RECOG_BATCH_SIZE = 2
@@ -17,7 +16,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load YOLOv5 model
 yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolo.pt')
-ocr_decoder = CTCDecoder.from_path('ocr_state.pt', CTCCRNNNoStretchV2, CHAR_MAP, blank_char=PEGON_CHARS[0])
+ocr_decoder = CTCDecoder.from_path('ocr_state.pt', OCRModel, CHAR_MAP, blank_char=PEGON_CHARS[0])
 ocr_decoder.model = ocr_decoder.model.to(DEVICE)
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
@@ -64,7 +63,5 @@ async def detect_objects(file: UploadFile = File(...)):
 
 
 def evaluate(decoder, data):
-    char_map = decoder.alphabet
-    
     return decoder.infer(data.to('cuda'))
 
