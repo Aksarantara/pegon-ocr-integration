@@ -21,7 +21,7 @@ ocr_decoder = CTCDecoder.from_path(model_class=OCRModel,
                                    model_path='ocr.json',
                                    char_map=CHAR_MAP,
                                    blank_char=PEGON_CHARS[0],
-                                   DEVICE)
+                                   device=DEVICE)
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
     ResizeAndPadHorizontal(target_h=ocr_decoder.model.image_height, target_w=ocr_decoder.model.image_width),
