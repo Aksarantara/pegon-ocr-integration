@@ -16,7 +16,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load YOLOv5 model
 yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', 'yolo.pt')
-ocr_decoder = CTCDecoder.from_path('ocr_state.pt', OCRModel, CHAR_MAP, blank_char=PEGON_CHARS[0])
+ocr_decoder = CTCDecoder.from_path('ocr_state.pt', char_map=CHAR_MAP, blank_char=PEGON_CHARS[0])
 ocr_decoder.model = ocr_decoder.model.to(DEVICE)
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),

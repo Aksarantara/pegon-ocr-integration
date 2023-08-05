@@ -850,12 +850,12 @@ class CTCDecoder:
         blank_idxs = [idx for idx, x in enumerate(self.alphabet) if x == self.blank_char]
         assert len(blank_idxs) == 1
         self.blank_index = blank_idxs[0]
-    
+   
     @classmethod
-    def from_path(cls, model_path, alphabet, *args, **kwargs):
-        saved_model = torch.load(model_path)
-        return cls(saved_model, alphabet, *args, **kwargs)
-    
+    def from_path(cls, model_path, char_map, blank_char): 
+        saved_model = torch.load(model_path) 
+        return cls(model=saved_model, char_map=char_map, blank_char=blank_char)
+
     def convert_to_text(self, output):
         output = torch.argmax(output, dim=2).detach().cpu().numpy()
         texts = []
