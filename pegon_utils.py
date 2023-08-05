@@ -122,7 +122,6 @@ PEGON_CHARS_V2 = [
 
 CHAR_MAP_V2 = {letter: idx for idx, letter in enumerate(PEGON_CHARS_V2)}
 
-# +
 # label transforms
 
 normalization_table = [
@@ -246,9 +245,13 @@ class CTCDecoder:
         self.blank_index = blank_idxs[0]
    
     @classmethod
-    def from_path(cls, model_path, char_map, blank_char): 
-        saved_model = torch.load(model_path) 
-        return cls(model=saved_model, char_map=char_map, blank_char=blank_char)
+    def from_path(cls, weight_path, model_path, model_class,
+                  char_map, blank_char):
+        saved_model = model_class(**json.load(open(model_path)))
+        saved_model.load_state_dict(torch.load(weight_path))
+        return cls(model=saved_model,
+                   char_map=char_map,
+                   blank_char=blank_char)
 
     def convert_to_text(self, output):
         output = torch.argmax(output, dim=2).detach().cpu().numpy()
