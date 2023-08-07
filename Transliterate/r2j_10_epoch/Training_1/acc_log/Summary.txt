@@ -1,0 +1,40 @@
+new_dataset.json
+
+TOP 10 SCORES FOR 188 SAMPLES:
+ACC:          0.994681
+Mean F-score: 0.999468
+MRR:          0.969415
+MAP_ref:      0.946809
+
+new_dataset.json
+
+TOP 5 SCORES FOR 188 SAMPLES:
+ACC:          0.994681
+Mean F-score: 0.999409
+MRR:          0.969415
+MAP_ref:      0.946809
+
+new_dataset.json
+
+TOP 3 SCORES FOR 188 SAMPLES:
+ACC:          0.989362
+Mean F-score: 0.999054
+MRR:          0.968085
+MAP_ref:      0.946809
+
+new_dataset.json
+
+TOP 2 SCORES FOR 188 SAMPLES:
+ACC:          0.989362
+Mean F-score: 0.999054
+MRR:          0.968085
+MAP_ref:      0.946809
+
+new_dataset.json
+
+TOP 1 SCORES FOR 188 SAMPLES:
+ACC:          0.946809
+Mean F-score: 0.993735
+MRR:          0.946809
+MAP_ref:      0.946809
+
