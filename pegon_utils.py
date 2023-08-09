@@ -250,6 +250,7 @@ class CTCDecoder:
         saved_model = model_class(**json.load(open(model_path)))
         saved_model.load_state_dict(torch.load(weight_path,
                                                map_location=device))
+        saved_model.to(device)
         return cls(model=saved_model,
                    char_map=char_map,
                    blank_char=blank_char)
