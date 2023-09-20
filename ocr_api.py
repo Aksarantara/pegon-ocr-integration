@@ -1,15 +1,24 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
 from typing import List
 import io
 import torch
 from torchvision.transforms import transforms
 from PIL import Image
 from ocr_models import CTCCRNNNoStretchV2 as OCRModel, ResizeAndPadHorizontal
+from dotenv import load_dotenv
+import os
 
 from pegon_utils import PEGON_CHARS_V2 as PEGON_CHARS, CHAR_MAP_V2 as CHAR_MAP
 from pegon_utils import ctc_collate_fn, CTCDecoder
 
-RECOG_BATCH_SIZE = 2
+load_dotenv()
+
+if "API_KEY" not in os.environ:
+    raise EnvironmentError("API_KEY environment variable is not defined. Please set it before running the application.")
+try:
+    recog_batch_size = int(os.getenv("RECOG_BATCH_SIZE"))
+except:
+    raise EnvironmentError(f"RECOG_BATCH_SIZE should be set to int, got {os.getenv('RECOG_BATCH_SIZE')}")
 
 app = FastAPI()
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -29,6 +38,14 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
+def get_api_key(api_key: str = Header(default=None)):
+    return api_key
+
+# API key dependency
+async def check_api_key(api_key: str = Depends(get_api_key)):
+    if not api_key or api_key != os.getenv("API_KEY"):
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
 @app.get('/')
 async def root():
     return {'hello': 'ready for ocr jawi-pegon'}
@@ -39,7 +56,7 @@ async def ping():
 
 # Define object detection endpoint
 @app.post("/infer")
-async def detect_objects(file: UploadFile = File(...)):
+async def detect_objects(file: UploadFile = File(...), api_key: str = Depends(check_api_key)):
     # Read image file as bytes
     image_bytes = await file.read()
     image = Image.open(io.BytesIO(image_bytes))
@@ -63,7 +80,7 @@ async def detect_objects(file: UploadFile = File(...)):
     
     try:
         result = []
-        for imgs in torch.split(line_imgs, RECOG_BATCH_SIZE):
+        for imgs in torch.split(line_imgs, recog_batch_size):
             result.extend(evaluate(ocr_decoder, imgs))
         return {'result': result}
     except RuntimeError:
