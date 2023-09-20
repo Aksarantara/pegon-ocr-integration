@@ -6,12 +6,11 @@ RUN apt-get update && \
     libgl1-mesa-glx \ 
     libglib2.0-0
 
-COPY . .
-
-RUN apt-get install -y git && \
-    git clone https://github.com/ultralytics/yolov5.git
+COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
+
+COPY . .
 
 CMD uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
