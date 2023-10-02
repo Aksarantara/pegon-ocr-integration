@@ -14,4 +14,4 @@ COPY . .
 
 CMD uvicorn ocr_api:app --reload --host 0.0.0.0 --port 8001
 
-EXPOSE 8000
+EXPOSE 8001
